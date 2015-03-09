@@ -1,0 +1,13 @@
+Release/
+Release-x64/
+Debug/
+Debug-x64/
+Generated/
+ipch/
+*.ncb
+*.user
+*.suo
+*.[Ii]
+*.aps
+*.sdf
+*.opensdf
