@@ -11,6 +11,12 @@
 #include <vector>
 #include <map>
 
+#define DECLARE_NECESSARY_METHOD(clazz)\
+    clazz(){}\
+    clazz(Json::Value root) : JBase(root) {}\
+    clazz(const clazz& base) {this->cur_root = base.cur_root;}\
+    clazz(const JBase& base) {this->cur_root = base.cur_root;}\
+
 #define DECLARE_OBJECT_ATTR(type, attr) type get##attr() {return type(cur_root[#attr]);}
 #define DECLARE_STRING_ATTR(attr)       std::string get##attr() {return getString(#attr);}
 #define DECLARE_INT_ATTR(attr)          int get##attr() {return getInt(#attr);}
@@ -103,10 +109,7 @@ public:
 class Data : public JBase
 {
 public:
-    Data(){}
-    Data(Json::Value root) : JBase(root) {}
-    Data(const Data& base) {this->cur_root = base.cur_root;}
-    Data(const JBase& base) {this->cur_root = base.cur_root;}
+    DECLARE_NECESSARY_METHOD(Data);
 
     DECLARE_INT_ATTR(success);
     DECLARE_STRING_ATTR(msg);
@@ -115,10 +118,7 @@ public:
 class Response : public JBase
 {
 public:
-    Response(){}
-    Response(Json::Value root) : JBase(root){}
-    Response(const Response& base) {this->cur_root = base.cur_root;}
-    Response(const JBase& base) {this->cur_root = base.cur_root;}
+    DECLARE_NECESSARY_METHOD(Response);
 
     DECLARE_OBJECT_ATTR(Data, data);
     DECLARE_LIST_ATTR(Data, array);
