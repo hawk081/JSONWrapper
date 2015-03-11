@@ -1,0 +1,93 @@
+  /// \brief user-defined conversion
+  // Best add -->
+  #if defined(_MSC_VER)
+  operator int()
+  {
+      if (this->isInt())
+      {
+          return this->asInt();
+      }
+      else
+      {
+          return 0;
+      }
+  }
+  operator std::string()
+  {
+      if(this->isString())
+      {
+          return this->asString();
+      }
+      else
+      {
+          return "";
+      }
+  }
+  operator unsigned int()
+  {
+      if (this->isUInt())
+      {
+          return this->asUInt();
+      } 
+      else
+      {
+          return 0;
+      }
+  }
+  operator __int64()
+  {
+      if (this->isInt64())
+      {
+          return this->asInt64();
+      } 
+      else
+      {
+          return 0;
+      }
+  }
+  operator unsigned __int64()
+  {
+      if (this->isUInt64())
+      {
+          return this->asUInt64();
+      } 
+      else
+      {
+          return 0;
+      }
+  }
+  operator float()
+  {
+      if (this->isDouble())
+      {
+          return this->asFloat();
+      } 
+      else
+      {
+          return 0.0f;
+      }
+  }
+  operator double()
+  {
+      if (this->isDouble())
+      {
+          return this->asDouble();
+      } 
+      else
+      {
+          return 0.0f;
+      }
+  }
+  operator bool()
+  {
+      if (this->isBool())
+      {
+          return this->asBool();
+      } 
+      else
+      {
+          return false;
+      }
+  }
+  #endif
+  // <-- Best add

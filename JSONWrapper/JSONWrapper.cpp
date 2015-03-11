@@ -3,125 +3,42 @@
 
 #include "stdafx.h"
 
-#include "json/json.h"
-#include "json/config.h"
-#include <boost/foreach.hpp>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
+#include "JsonBase.h"
 
-#define DECLARE_NECESSARY_METHOD(clazz)\
-    clazz(){}\
-    clazz(Json::Value root) : JBase(root) {}\
-    clazz(const clazz& base) {this->cur_root = base.cur_root;}\
-    clazz(const JBase& base) {this->cur_root = base.cur_root;}\
-
-#define DECLARE_OBJECT_ATTR(type, attr) type get##attr() {return type(cur_root[#attr]);}
-#define DECLARE_STRING_ATTR(attr)       std::string get##attr() {return getString(#attr);}
-#define DECLARE_INT_ATTR(attr)          int get##attr() {return getInt(#attr);}
-#define DECLARE_UINT_ATTR(attr)         unsigned int get##attr() {return getUInt(#attr);}
-#define DECLARE_INT64_ATTR(attr)        __int64 get##attr() {return getInt64(#attr);}
-#define DECLARE_UINT64_ATTR(attr)       unsigned __int64 get##attr() {return getUInt64(#attr);}
-#define DECLARE_LARGEINT_ATTR(attr)     __int64 get##attr() {return getLargestInt(#attr);}
-#define DECLARE_LARGEUINT_ATTR(attr)    unsigned __int64 get##attr() {return getLargestUInt(#attr);}
-#define DECLARE_FLOAT_ATTR(attr)        float get##attr() {return getFloat(#attr);}
-#define DECLARE_DOUBLE_ATTR(attr)       double get##attr() {return getDouble(#attr);}
-#define DECLARE_BOOL_ATTR(attr)         bool get##attr() {return getBool(#attr);}
-#define DECLARE_LIST_ATTR(type, attr)   std::vector<type> get##attr()\
-{\
-    std::vector<type> attr;\
-    Json::Value value = cur_root[#attr];\
-    for (Json::ValueIterator it = value.begin(); it != value.end(); it++)\
-    {\
-    attr.push_back(type(*it));\
-    }\
-return attr;\
-}
-
-class JBase
-{
-public:
-    Json::Value cur_root;
-
-public:
-    JBase(){}
-    JBase(Json::Value root) {this->cur_root = root;}
-    JBase(const JBase& base) {this->cur_root = base.cur_root;}
-    ~JBase(){};
-    
-    std::string getString(std::string key) 
-    {
-        return cur_root[key].asString();
-    }
-
-    int getInt(std::string key) 
-    {
-        return cur_root[key].asInt();
-    }
-
-    unsigned int getUInt(std::string key) 
-    {
-        return cur_root[key].asUInt();
-    }
-
-    __int64 getInt64(std::string key) 
-    {
-        return cur_root[key].asInt64();
-    }
-
-    unsigned __int64 getUInt64(std::string key) 
-    {
-        return cur_root[key].asUInt64();
-    }
-
-    __int64 getLargestInt(std::string key) 
-    {
-        return cur_root[key].asLargestInt();
-    }
-
-    unsigned __int64 getLargestUInt(std::string key) 
-    {
-        return cur_root[key].asLargestUInt();
-    }
-
-    float getFloat(std::string key) 
-    {
-        return cur_root[key].asFloat();
-    }
-
-    double getDouble(std::string key) 
-    {
-        return cur_root[key].asDouble();
-    }
-
-    bool getBool(std::string key) 
-    {
-        return cur_root[key].asBool();
-    }
-
-    JBase getObject(std::string key)
-    {
-        return JBase(cur_root[key]);
-    }
-};
-
-class Data : public JBase
+class Data : public JsonBase
 {
 public:
     DECLARE_NECESSARY_METHOD(Data);
 
-    DECLARE_INT_ATTR(success);
-    DECLARE_STRING_ATTR(msg);
+    DECLARE_ATTR(int, success);
+    DECLARE_ATTR(string, msg);
 };
 
-class Response : public JBase
+class Response : public JsonBase
 {
 public:
     DECLARE_NECESSARY_METHOD(Response);
 
     DECLARE_OBJECT_ATTR(Data, data);
-    DECLARE_LIST_ATTR(Data, array);
+    DECLARE_OBJ_LIST_ATTR(Data, array);
+};
+
+class Model : public JsonBase
+{
+public:
+    DECLARE_NECESSARY_METHOD(Model);
+
+    DECLARE_ATTR(string, _string);
+    DECLARE_ATTR(int, _int);
+    DECLARE_ATTR(uint, _uint);
+    DECLARE_ATTR(float, _float);
+    DECLARE_ATTR(double, _double);
+    DECLARE_ATTR(bool, _bool);
+    DECLARE_LIST_ATTR(std::string, string_array);
+    DECLARE_LIST_ATTR(double, doubld_list);
+    DECLARE_LIST_ATTR(float, float_list);
+    DECLARE_OBJECT_ATTR(Data, object);
+    DECLARE_OBJ_LIST_ATTR(Data, data_list);
 };
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -131,16 +48,83 @@ int _tmain(int argc, _TCHAR* argv[])
     bool ok = reader.parse("{\"status\":1,\"data\":{\"success\":1, \"msg\":\"null\"},\"array\":[{\"success\":11,\"msg\":\"hello1\"},{\"success\":19,\"msg\":\"hello2\"},{\"success\":29,\"msg\":\"hello3\"}]}", root);
     Response p(root);
 
+    std::string js = p.getJson();
+
     Data data = p.getObject("data");
-    int success = data.getsuccess();
+    int success = data.get_success();
 
-    std::string msg = data.getmsg();
+    std::string msg = data.get_msg();
 
-    std::vector<Data> _list = p.getarray();
-    int _s = _list.at(0).getsuccess();
-    std::string _msg = _list.at(0).getmsg();
-    int _s1 = _list.at(1).getsuccess();
-    std::string _msg1 = _list.at(1).getmsg();
+    std::vector<Data> _list = p.get_array();
+    int _s = _list.at(0).get_success();
+    std::string _msg = _list.at(0).get_msg();
+    int _s1 = _list.at(1).get_success();
+    std::string _msg1 = _list.at(1).get_msg();
+
+    Json::Value serializeRoot;
+    serializeRoot["string"] = "123";
+    serializeRoot["int"] = 3;
+    serializeRoot["float"] = 3.14159;
+    serializeRoot["obj"] = serializeRoot;
+    //serializeRoot["list"] = _list;
+
+    Json::StyledWriter writer;
+    std::string output = writer.write( serializeRoot );
+
+    Model model;
+    Data object;
+    object.set_msg("data's message");
+    object.set_success(false);
+
+    model.set_object(object);
+    model.set__string("string");
+    model.set__int( -123 );
+    model.set__uint( 34 );
+    model.set__float( 3.1415f );
+    model.set__double( 3.141592653 );
+    model.set__bool( false );
+    std::vector<std::string> string_a = model.get_string_array();
+    string_a.push_back("123");
+    string_a.push_back("1231111111111111");
+    string_a.push_back("123xxxxxxxxxxxxxxxxxxxxxxxx");
+    string_a.push_back("123--------fasfdfadfa");
+    model.set_string_array(string_a);
+    std::vector<Data> _dlist = model.get_data_list();
+    data.set_msg("x");
+    _dlist.push_back(data);
+    _dlist.push_back(data);
+    _dlist.push_back(data);
+    _dlist.push_back(data);
+    model.set_data_list(_dlist);
+
+    std::vector<double> _double_list = model.get_doubld_list();
+    _double_list.push_back(1.0);
+    _double_list.push_back(2.0);
+    _double_list.push_back(1131.0111111111);
+    _double_list.push_back(1.011111);
+    model.set_doubld_list(_double_list);
+
+    std::string _output = model.getJson();
+    Json::Value _root;
+    reader.parse(_output, _root);
+    Model _model(_root);
+
+    cout << _model.get_object().get_msg() << endl;
+    vector<double> __double_list = _model.get_doubld_list();
+    for(vector<double>::iterator it = __double_list.begin();it != __double_list.end(); it++)
+    {
+        cout << *it << endl;
+    }
+    vector<std::string> __string_list = _model.get_string_array();
+    for(vector<std::string>::iterator it = __string_list.begin();it != __string_list.end(); it++)
+    {
+        cout << *it << endl;
+    }
+    vector<Data> __data_list = _model.get_data_list();
+    for(vector<Data>::iterator it = __data_list.begin();it != __data_list.end(); it++)
+    {
+        cout << it->get_msg() << " " << it->get_success() << endl;
+    }
 	return 0;
 }
 

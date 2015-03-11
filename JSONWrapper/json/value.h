@@ -337,6 +337,20 @@ Json::Value obj_value(Json::objectValue); // {}
 
   bool isConvertibleTo(ValueType other) const;
 
+  /// \brief user-defined conversion
+  // Best add -->
+  #if defined(_MSC_VER)
+  operator Int() { return this->asInt();}
+  operator std::string() { return this->asString();}
+  operator UInt() { return this->asUInt();}
+  operator Int64() { return this->asInt64();}
+  operator UInt64() { return this->asUInt64();}
+  operator float() { return this->asFloat();}
+  operator double() { return this->asDouble();}
+  operator bool() { return this->asBool();}
+  #endif
+  // <-- Best add
+
   /// Number of values in array or object
   ArrayIndex size() const;
 
