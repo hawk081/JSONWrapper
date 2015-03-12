@@ -12,6 +12,7 @@ public:
 
     DECLARE_ATTR(int, success);
     DECLARE_ATTR(string, msg);
+    DECLARE_ATTR(wstring, content);
 };
 
 class Response : public JsonBase
@@ -45,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
     Json::Reader reader;
     Json::Value root;
-    bool ok = reader.parse("{\"status\":1,\"data\":{\"success\":1, \"msg\":\"null\"},\"array\":[{\"success\":11,\"msg\":\"hello1\"},{\"success\":19,\"msg\":\"hello2\"},{\"success\":29,\"msg\":\"hello3\"}]}", root);
+    bool ok = reader.parse(L"{\"status\":1,\"data\":{\"content\":\"\x55\x6E\x69\x63\x6F\x64\x65\u5185\u5BB9\u6D4B\u8BD5\",\"success\":1, \"msg\":\"\u6211\u4EEC\"},\"array\":[{\"success\":11,\"msg\":\"hello1\"},{\"success\":19,\"msg\":\"hello2\"},{\"success\":29,\"msg\":\"hello3\"}]}", root);
     Response p(root);
 
     std::string js = p.getJson();
@@ -53,7 +54,9 @@ int _tmain(int argc, _TCHAR* argv[])
     Data data = p.getObject("data");
     int success = data.get_success();
 
+    std::wstring content = data.get_content();
     std::string msg = data.get_msg();
+    std::wstring wmsg = data.cur_root["msg"].asWString();
 
     std::vector<Data> _list = p.get_array();
     int _s = _list.at(0).get_success();

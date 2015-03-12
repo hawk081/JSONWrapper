@@ -19,6 +19,10 @@
 #include <cstddef> // size_t
 #include <algorithm> // min()
 
+#if defined(_MSC_VER)
+#include "json_coder.h"
+#endif
+
 #define JSON_ASSERT_UNREACHABLE assert(false)
 
 namespace Json {
@@ -381,6 +385,12 @@ Value::Value(const std::string& value) {
       duplicateAndPrefixStringValue(value.data(), static_cast<unsigned>(value.length()));
 }
 
+#if defined(_MSC_VER)
+Value::Value(const std::wstring& value) {
+    Value(UnicodeToUTF8(value));
+}
+#endif
+
 Value::Value(const StaticString& value) {
   initBasic(stringValue);
   value_.string_ = const_cast<char*>(value.c_str());
@@ -639,6 +649,12 @@ std::string Value::asString() const {
     JSON_FAIL_MESSAGE("Type is not convertible to string");
   }
 }
+
+#if defined(_MSC_VER)
+std::wstring Value::asWString() const {
+    return UTF8ToUnicode(asString());
+}
+#endif
 
 #ifdef JSON_USE_CPPTL
 CppTL::ConstString Value::asConstString() const {

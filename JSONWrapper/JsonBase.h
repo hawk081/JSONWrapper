@@ -48,6 +48,11 @@ public:
         return writer.write( cur_root );
     }
 
+    wstring getwstring(std::string key)
+    {
+        return cur_root[key].asWString();
+    }
+
     string getstring(std::string key) 
     {
         return cur_root[key].asString();

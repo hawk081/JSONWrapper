@@ -18,6 +18,10 @@
 #include <memory>
 #include <set>
 
+#if defined(_MSC_VER)
+#include "json_coder.h"
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER < 1500 // VC++ 8.0 and below
 #define snprintf _snprintf
 #endif
@@ -86,6 +90,14 @@ Reader::parse(const std::string& document, Value& root, bool collectComments) {
   const char* end = begin + document_.length();
   return parse(begin, end, root, collectComments);
 }
+
+#if defined(_MSC_VER)
+bool
+Reader::parse(const std::wstring& document, Value& root, bool collectComments) {
+  std::string _document = UnicodeToUTF8( document );
+  return parse( _document, root, collectComments);
+}
+#endif
 
 bool Reader::parse(std::istream& sin, Value& root, bool collectComments) {
   // std::istream_iterator<char> begin(sin);

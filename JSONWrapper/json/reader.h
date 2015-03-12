@@ -73,6 +73,10 @@ public:
    */
   bool
   parse(const std::string& document, Value& root, bool collectComments = true);
+  #if defined(_MSC_VER)
+  bool
+  parse(const std::wstring& document, Value& root, bool collectComments = true);
+  #endif
 
   /** \brief Read a Value from a <a HREF="http://www.json.org">JSON</a>
    document.

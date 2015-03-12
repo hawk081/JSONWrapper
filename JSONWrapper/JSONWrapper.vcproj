@@ -204,6 +204,14 @@
 					Name="src"
 					>
 					<File
+						RelativePath=".\json\src\json_coder.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\json\src\json_coder.h"
+						>
+					</File>
+					<File
 						RelativePath=".\json\src\json_reader.cpp"
 						>
 					</File>

@@ -41,14 +41,14 @@ class JSON_API Exception;
 /** Exceptions which the user cannot easily avoid.
  *
  * E.g. out-of-memory (when we use malloc), stack-overflow, malicious input
- * 
+ *
  * \remark derived from Json::Exception
  */
 class JSON_API RuntimeError;
 /** Exceptions thrown by JSON_ASSERT/JSON_FAIL macros.
  *
  * These are precondition-violations (user bugs) and internal errors (our bugs).
- * 
+ *
  * \remark derived from Json::Exception
  */
 class JSON_API LogicError;
@@ -273,6 +273,9 @@ Json::Value obj_value(Json::objectValue); // {}
    */
   Value(const StaticString& value);
   Value(const std::string& value); ///< Copy data() til size(). Embedded zeroes too.
+#if defined(_MSC_VER)
+  Value(const std::wstring& value);
+#endif
 #ifdef JSON_USE_CPPTL
   Value(const CppTL::ConstString& value);
 #endif
@@ -302,6 +305,9 @@ Json::Value obj_value(Json::objectValue); // {}
 
   const char* asCString() const; ///< Embedded zeroes could cause you trouble!
   std::string asString() const; ///< Embedded zeroes are possible.
+  #if defined(_MSC_VER)
+  std::wstring asWString() const;
+  #endif
   /** Get raw char* of string-value.
    *  \return false if !string. (Seg-fault if str or end are NULL.)
    */
@@ -348,6 +354,7 @@ Json::Value obj_value(Json::objectValue); // {}
   operator float() { return this->asFloat();}
   operator double() { return this->asDouble();}
   operator bool() { return this->asBool();}
+  operator std::wstring() { return this->asWString();}
   #endif
   // <-- Best add
 
