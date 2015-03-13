@@ -236,14 +236,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\JsonBase.h"
-				>
-			</File>
-			<File
-				RelativePath=".\JsonBaseUtils.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -292,6 +284,18 @@
 				</File>
 				<File
 					RelativePath=".\json\writer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="json_wrapper"
+				>
+				<File
+					RelativePath=".\json_wrapper\JsonBase.h"
+					>
+				</File>
+				<File
+					RelativePath=".\json_wrapper\JsonBaseUtils.h"
 					>
 				</File>
 			</Filter>
