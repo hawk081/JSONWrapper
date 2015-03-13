@@ -17,6 +17,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(_MSC_VER)
+#include "json_coder.h"
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER < 1500 // VC++ 8.0 and below
 #include <float.h>
 #define isfinite _finite
@@ -296,6 +300,13 @@ std::string FastWriter::write(const Value& root) {
   return document_;
 }
 
+#if defined(_MSC_VER)
+std::wstring FastWriter::writeW(const Value& root)
+{
+    return UTF8ToUnicode(write(root));
+}
+#endif
+
 void FastWriter::writeValue(const Value& value) {
   switch (value.type()) {
   case nullValue:
@@ -360,6 +371,13 @@ std::string StyledWriter::write(const Value& root) {
   document_ += "\n";
   return document_;
 }
+
+#if defined(_MSC_VER)
+std::wstring StyledWriter::writeW(const Value& root)
+{
+    return UTF8ToUnicode(write(root));
+}
+#endif
 
 void StyledWriter::writeValue(const Value& value) {
   switch (value.type()) {

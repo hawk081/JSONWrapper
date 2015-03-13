@@ -48,6 +48,18 @@ public:
         return writer.write( cur_root );
     }
 
+    std::wstring getJsonW()
+    {
+        Json::FastWriter writer;
+        return writer.writeW( cur_root );
+    }
+
+    std::wstring getStyledJsonW()
+    {
+        Json::StyledWriter writer;
+        return writer.writeW( cur_root );
+    }
+
     wstring getwstring(std::string key)
     {
         return cur_root[key].asWString();

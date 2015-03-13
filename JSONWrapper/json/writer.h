@@ -139,6 +139,9 @@ public:
   virtual ~Writer();
 
   virtual std::string write(const Value& root) = 0;
+#if defined(_MSC_VER)
+  virtual std::wstring writeW(const Value& root) = 0;
+#endif
 };
 
 /** \brief Outputs a Value in <a HREF="http://www.json.org">JSON</a> format
@@ -169,6 +172,9 @@ public:
 
 public: // overridden from Writer
   virtual std::string write(const Value& root);
+#if defined(_MSC_VER)
+  virtual std::wstring writeW(const Value& root);
+#endif
 
 private:
   void writeValue(const Value& value);
@@ -214,6 +220,9 @@ public: // overridden from Writer
    * \return String containing the JSON document that represents the root value.
    */
   virtual std::string write(const Value& root);
+#if defined(_MSC_VER)
+  virtual std::wstring writeW(const Value& root);
+#endif
 
 private:
   void writeValue(const Value& value);
