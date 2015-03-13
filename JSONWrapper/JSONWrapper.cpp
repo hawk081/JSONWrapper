@@ -42,6 +42,55 @@ public:
     DECLARE_OBJ_LIST_ATTR(Data, data_list);
 };
 
+class YesterdayData : public JsonBase
+{
+public:
+    DECLARE_NECESSARY_METHOD(YesterdayData);
+
+    DECLARE_ATTR(wstring, fl);
+    DECLARE_ATTR(wstring, fx);
+    DECLARE_ATTR(wstring, high);
+    DECLARE_ATTR(wstring, type);
+    DECLARE_ATTR(wstring, low);
+    DECLARE_ATTR(wstring, date);  
+};
+
+class ForecastData : public JsonBase
+{
+public:
+    DECLARE_NECESSARY_METHOD(ForecastData);
+
+    DECLARE_ATTR(wstring, fengxiang);
+    DECLARE_ATTR(wstring, fengli);
+    DECLARE_ATTR(wstring, high);
+    DECLARE_ATTR(wstring, type);
+    DECLARE_ATTR(wstring, low);
+    DECLARE_ATTR(wstring, date);
+};
+
+class WeatherData : public JsonBase
+{
+public:
+    DECLARE_NECESSARY_METHOD(WeatherData);
+
+    DECLARE_ATTR(wstring, wendu);
+    DECLARE_ATTR(wstring, ganmao);
+    DECLARE_ATTR(wstring, aqi);
+    DECLARE_ATTR(wstring, city);
+    DECLARE_OBJ_LIST_ATTR(ForecastData, forecast);
+    DECLARE_OBJECT_ATTR(YesterdayData, yesterday);
+};
+
+class WeatherResponse : public JsonBase
+{
+public:
+    DECLARE_NECESSARY_METHOD(WeatherResponse);
+
+    DECLARE_ATTR(wstring, desc);
+    DECLARE_ATTR(int, status);
+    DECLARE_OBJECT_ATTR(WeatherData, data);
+};
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     Json::Reader reader;
@@ -127,6 +176,29 @@ int _tmain(int argc, _TCHAR* argv[])
     for(vector<Data>::iterator it = __data_list.begin();it != __data_list.end(); it++)
     {
         cout << it->get_msg() << " " << it->get_success() << endl;
+    }
+
+    std::wstring _content(L"{\"desc\":\"OK\",\"status\":1000,\"data\":{\"wendu\":\"19\",\"ganmao\":\"昼夜温差很大，易发生感冒，请注意适当增减衣服，加强自我防护避免感冒。\",\"forecast\":[{\"fengxiang\":\"南风\",\"fengli\":\"微风级\",\"high\":\"高温 19℃\",\"type\":\"多云\",\"low\":\"低温 5℃\",\"date\":\"13日星期五\"},{\"fengxiang\":\"南风\",\"fengli\":\"微风级\",\"high\":\"高温 19℃\",\"type\":\"阴\",\"low\":\"低温 8℃\",\"date\":\"14日星期六\"},{\"fengxiang\":\"南风\",\"fengli\":\"微风级\",\"high\":\"高温 19℃\",\"type\":\"多云\",\"low\":\"低温 8℃\",\"date\":\"15日星期天\"},{\"fengxiang\":\"南风\",\"fengli\":\"微风级\",\"high\":\"高温 20℃\",\"type\":\"阴\",\"low\":\"低温 13℃\",\"date\":\"16日星期一\"},{\"fengxiang\":\"南风\",\"fengli\":\"微风级\",\"high\":\"高温 21℃\",\"type\":\"阴\",\"low\":\"低温 9℃\",\"date\":\"17日星期二\"}],\"yesterday\":{\"fl\":\"微风\",\"fx\":\"南风\",\"high\":\"高温 20℃\",\"type\":\"晴\",\"low\":\"低温 4℃\",\"date\":\"12日星期四\"},\"aqi\":\"91\",\"city\":\"成都\"}}");
+    if(reader.parse(_content, root))
+    {
+        WeatherResponse wres(root);
+
+        std::wstring desc = wres.get_desc();
+        int status = wres.get_status();
+        WeatherData wdata = wres.get_data();
+
+        std::vector<ForecastData> flist = wdata.get_forecast();
+
+        ForecastData fd = flist.at(0);
+        std::wstring fengli = fd.get_fengli();
+
+        YesterdayData yd = wdata.get_yesterday();
+        std::wstring wdate_ = yd.get_date();
+
+        std::string styledJson = wres.getStyledJson();
+        std::wstring styledJsonW = wres.getStyledJsonW();
+
+        std::wstring jsonw = wres.getJsonW();
     }
 	return 0;
 }
