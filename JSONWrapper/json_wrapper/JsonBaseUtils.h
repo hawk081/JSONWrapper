@@ -8,6 +8,12 @@ typedef unsigned __int64 uint64;
 //typedef float float
 //typedef double double
 
+#define DECLARE_NECESSARY_METHOD_BASE(clazz, baseclazz)\
+    clazz(){}\
+    clazz(Json::Value root) : baseclazz(root) {}\
+    clazz(const clazz& base) {this->cur_root = base.cur_root;}\
+    clazz(const JsonBase& base) {this->cur_root = base.cur_root;}\
+
 #define DECLARE_NECESSARY_METHOD(clazz)\
     clazz(){}\
     clazz(Json::Value root) : JsonBase(root) {}\
